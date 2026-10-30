@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GLEUHR — Product Feedback</title>
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=DM+Sans:opsz,wght@9..40,500;9..40,700;9..40,800&family=Manrope:wght@400;500;600;700&display=swap">
+<style>
+  :root {
+    --linen: #FAF3EB;
+    --ink: #161515;
+    --muted: #666666;
+    --coral: #D75447;
+    --coral-deep: #B43F31;
+    --heart-empty: #F3DCD5;
+    --line: #E6D9CB;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--linen); color: var(--ink); font-family: Manrope, system-ui, sans-serif; -webkit-text-size-adjust: 100%; }
+  .wrap { max-width: 1120px; margin: 0 auto; padding: clamp(20px, 5vw, 64px) clamp(16px, 4vw, 48px); display: flex; flex-direction: column; gap: clamp(20px, 3vw, 32px); }
+  .brand { font-family: 'DM Sans', sans-serif; font-weight: 800; font-size: 20px; letter-spacing: 0.18em; }
+  .intro { display: flex; flex-direction: column; gap: 10px; max-width: 680px; }
+  h1 { margin: 0; font-family: 'DM Sans', sans-serif; font-weight: 700; font-size: clamp(30px, 5.2vw, 56px); line-height: 1.05; letter-spacing: -0.02em; }
+  .lead { margin: 0; font-size: clamp(15px, 1.8vw, 18px); line-height: 1.5; color: var(--muted); }
+  .grid { display: flex; flex-wrap: wrap; gap: clamp(16px, 2.5vw, 28px); align-items: stretch; }
+  .card { background: #FFFFFF; border-radius: 28px; padding: clamp(22px, 3vw, 40px); min-width: 0; }
+  .card.full { flex: 1 1 100%; }
+  .card.heart-card { flex: 1 1 340px; display: flex; flex-direction: column; align-items: center; gap: 18px; text-align: center; }
+  .card.form-card { flex: 1.25 1 420px; display: flex; flex-direction: column; gap: 30px; }
+  .eyebrow { margin: 0; font-family: Archivo, sans-serif; font-weight: 600; font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--coral-deep); }
+  .q-title { margin: 0; font-family: 'DM Sans', sans-serif; font-weight: 700; font-size: clamp(22px, 2.6vw, 28px); line-height: 1.2; }
+  .muted { margin: 0; font-size: 15px; line-height: 1.5; color: var(--muted); }
+  .small { font-size: 14px; }
+  .stack { display: flex; flex-direction: column; gap: 6px; }
+  .stack-10 { display: flex; flex-direction: column; gap: 10px; }
+  .stack-14 { display: flex; flex-direction: column; gap: 14px; }
+  .heart-head { align-self: stretch; text-align: left; }
+  label.field { display: flex; flex-direction: column; gap: 8px; }
+  .label-strong { font-weight: 700; font-size: 15px; }
+
+  input[type="text"], input[type="tel"], textarea {
+    width: 100%; border: 1.5px solid var(--line); border-radius: 16px; padding: 14px;
+    font-family: Manrope, sans-serif; font-size: 16px; font-weight: 500; color: var(--ink); background: #FFFFFF;
+  }
+  input[type="text"] { min-height: 54px; }
+  textarea { line-height: 1.5; resize: vertical; }
+  input:focus, textarea:focus { outline: 2px solid var(--coral-deep); outline-offset: 1px; border-color: transparent; }
+  .phone-row { display: flex; border: 1.5px solid var(--line); border-radius: 16px; overflow: hidden; background: #FFFFFF; }
+  .phone-row:focus-within { outline: 2px solid var(--coral-deep); outline-offset: 1px; border-color: transparent; }
+  .phone-row span { display: flex; align-items: center; padding: 0 14px; background: var(--linen); color: var(--muted); font-weight: 700; font-size: 15px; }
+  .phone-row input { border: 0; border-radius: 0; flex: 1; min-width: 0; }
+  .phone-row input:focus { outline: none; }
+  .err { margin: 0; font-size: 14px; font-weight: 600; color: var(--coral-deep); }
+  .err[hidden] { display: none; }
+  .invalid { border-color: var(--coral-deep) !important; }
+
+  /* Heart love meter */
+  .heart-btn {
+    border: 0; background: transparent; padding: 12px; margin-top: 6px; cursor: pointer; border-radius: 24px;
+    touch-action: pan-y; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none;
+    -webkit-tap-highlight-color: transparent; transition: transform 160ms ease;
+  }
+  .heart-btn.holding { transform: scale(1.06); }
+  .heart-btn:focus-visible { outline: 3px solid var(--coral-deep); outline-offset: 2px; }
+  .heart {
+    position: relative; width: 220px; height: 198px; background: var(--heart-empty);
+    clip-path: path('M110 196 C 44 143, 0 105, 0 57 C 0 24, 26 0, 59 0 C 84 0, 101 13, 110 31 C 119 13, 136 0, 161 0 C 194 0, 220 24, 220 57 C 220 105, 176 143, 110 196 Z');
+  }
+  .heart-fill { position: absolute; left: 0; right: 0; bottom: 0; height: 0%; background: var(--coral); transition: height 90ms linear; }
+  .heart-pct { position: absolute; left: 0; right: 0; top: 0; bottom: 18px; display: flex; align-items: center; justify-content: center; font-family: 'DM Sans', sans-serif; font-weight: 800; font-size: 44px; color: var(--ink); pointer-events: none; }
+  .love-word { margin: 0; font-family: 'DM Sans', sans-serif; font-weight: 700; font-size: 22px; }
+  .link-btn { border: 0; background: transparent; color: var(--coral-deep); font-family: Manrope, sans-serif; font-weight: 600; font-size: 14px; text-decoration: underline; padding: 12px; min-height: 44px; cursor: pointer; }
+
+  /* Preset chips */
+  .chips { display: flex; flex-wrap: wrap; gap: 10px; }
+  .chip { min-height: 44px; padding: 10px 16px; border-radius: 999px; border: 1.5px solid var(--line); background: #FFFFFF; color: var(--ink); font-family: Manrope, sans-serif; font-weight: 600; font-size: 14px; cursor: pointer; }
+  .chip[aria-pressed="true"] { background: var(--ink); color: #FFFFFF; border-color: var(--ink); }
+  .chip:focus-visible, .submit:focus-visible, .outline-btn:focus-visible, .link-btn:focus-visible { outline: 3px solid var(--coral-deep); outline-offset: 2px; }
+
+  .optional-row { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+  .optional-row .big { font-family: 'DM Sans', sans-serif; font-weight: 700; font-size: 20px; }
+  .submit { width: 100%; min-height: 56px; border: 0; border-radius: 999px; background: var(--coral-deep); color: #FFFFFF; font-family: Manrope, sans-serif; font-weight: 700; font-size: 17px; cursor: pointer; }
+  .submit[disabled] { opacity: 0.7; cursor: wait; }
+  .note { margin: 0; text-align: center; font-size: 13px; color: var(--muted); }
+  .hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+
+  .thanks { background: #FFFFFF; border-radius: 28px; padding: clamp(28px, 5vw, 64px); display: flex; flex-direction: column; align-items: center; gap: 14px; text-align: center; }
+  .thanks[hidden], .grid[hidden] { display: none; }
+  .thanks h2 { margin: 0; font-family: 'DM Sans', sans-serif; font-weight: 700; font-size: clamp(26px, 4vw, 40px); line-height: 1.15; }
+  .thanks p { margin: 0; max-width: 520px; font-size: 16px; line-height: 1.6; color: var(--muted); }
+  .outline-btn { margin-top: 8px; min-height: 48px; padding: 0 24px; border-radius: 999px; border: 1.5px solid var(--ink); background: #FFFFFF; color: var(--ink); font-family: Manrope, sans-serif; font-weight: 700; font-size: 15px; cursor: pointer; }
+  .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+</style>
+</head>
+<body>
+<main class="wrap">
+  <div class="brand">GLEUHR</div>
+
+  <div class="intro">
+    <h1>Be honest. We're listening.</h1>
+    <p class="lead">A few quick questions about your GLEUHR product. It takes less than a minute.</p>
+  </div>
+
+  <form id="feedback" class="grid" novalidate>
+    <!-- Hidden from people; catches spam bots -->
+    <div class="hp" aria-hidden="true"><label>Website <input type="text" name="website" tabindex="-1" autocomplete="off"></label></div>
+
+    <section class="card full">
+      <label class="field">
+        <span class="eyebrow">Question 1 of 4</span>
+        <span class="q-title">Which GLEUHR product are you reviewing?</span>
+        <input type="text" id="product" name="product" maxlength="120" autocomplete="off" placeholder="Type the product name from your pack" aria-describedby="product-err">
+      </label>
+      <p class="err" id="product-err" hidden>Please tell us which product this is about.</p>
+    </section>
+
+    <section class="card heart-card">
+      <div class="stack heart-head">
+        <p class="eyebrow">Question 2 of 4</p>
+        <h2 class="q-title">How much do you love GLEUHR?</h2>
+        <p class="muted">Press and hold the heart. The longer you hold, the more it fills.</p>
+      </div>
+      <button type="button" class="heart-btn" id="heartBtn" aria-label="Press and hold to fill the love meter. Keyboard: press Space to add love.">
+        <div class="heart" aria-hidden="true">
+          <div class="heart-fill" id="heartFill"></div>
+          <div class="heart-pct" id="heartPct">0%</div>
+        </div>
+      </button>
+      <div class="stack" aria-live="polite" style="align-items: center; gap: 4px">
+        <p class="love-word" id="loveWord">Hold the heart</p>
+        <p class="muted small" id="loveHint">Your love level will show here.</p>
+      </div>
+      <button type="button" class="link-btn" id="resetLove">Start over</button>
+    </section>
+
+    <section class="card form-card">
+      <div class="stack-14">
+        <div class="stack">
+          <p class="eyebrow">Question 3 of 4</p>
+          <h2 class="q-title">Tell us what you think</h2>
+        </div>
+        <p class="muted small">What did you love? Tap all that apply.</p>
+        <div class="chips" id="chips">
+          <button type="button" class="chip" aria-pressed="false">Visible results</button>
+          <button type="button" class="chip" aria-pressed="false">Gentle on my skin</button>
+          <button type="button" class="chip" aria-pressed="false">Texture and feel</button>
+          <button type="button" class="chip" aria-pressed="false">Lovely fragrance</button>
+        </div>
+        <label class="field" style="margin-top: 4px">
+          <span class="label-strong">Didn't like something? Or want to say more? Write it here</span>
+          <textarea id="comments" name="comments" rows="4" maxlength="2000" placeholder="Tell us anything: what you loved, or what didn't work for you."></textarea>
+        </label>
+      </div>
+
+      <div class="stack-10">
+        <p class="eyebrow">Question 4 of 4</p>
+        <label class="field">
+          <span class="optional-row"><span class="big">Your phone number</span><span class="muted small">Optional</span></span>
+          <span class="muted small">Only if you're happy for our team to call you back about this.</span>
+          <span class="phone-row" id="phoneRow">
+            <span>+91</span>
+            <input type="tel" id="phone" name="phone" inputmode="numeric" autocomplete="tel-national" maxlength="10" placeholder="98765 43210" aria-describedby="phone-err">
+          </span>
+        </label>
+        <p class="err" id="phone-err" hidden>Please enter a 10-digit mobile number, or leave it blank.</p>
+      </div>
+
+      <div class="stack-10">
+        <button type="submit" class="submit" id="submitBtn">Send my feedback</button>
+        <p class="err" id="send-err" role="alert" hidden style="text-align: center">We couldn't send your feedback. Please check your internet connection and try again.</p>
+        <p class="note">We read every response. Your number is never shared.</p>
+      </div>
+    </section>
+  </form>
+
+  <section class="thanks" id="thanks" hidden tabindex="-1">
+    <svg width="72" height="66" viewBox="0 0 220 198" aria-hidden="true"><path d="M110 196 C 44 143, 0 105, 0 57 C 0 24, 26 0, 59 0 C 84 0, 101 13, 110 31 C 119 13, 136 0, 161 0 C 194 0, 220 24, 220 57 C 220 105, 176 143, 110 196 Z" fill="#D75447"></path></svg>
+    <h2>Thank you for being honest with us.</h2>
+    <p>You gave GLEUHR <span id="thanksLove">0</span>% love. Our team reads every response and uses it to make our products better.</p>
+    <button type="button" class="outline-btn" id="again">Send another response</button>
+  </section>
+</main>
+
+<script>
+(function () {
+  // Google Sheet connection (Apps Script web app URL)
+  var ENDPOINT = 'https://script.google.com/macros/s/AKfycbymz4DCybgGaWfkvNQC0pZZK6smSUUJui6ANx_09eMVw5civak6PNVPiQXC3MzQl-kB/exec';
+
+  var love = 0, timer = null;
+  var $ = function (id) { return document.getElementById(id); };
+  var heartBtn = $('heartBtn'), fill = $('heartFill'), pct = $('heartPct');
+  var word = $('loveWord'), hint = $('loveHint');
+
+  function render() {
+    fill.style.height = love + '%';
+    pct.textContent = love + '%';
+    pct.style.color = love >= 52 ? '#FFFFFF' : '#161515';
+    var w = 'Hold the heart', h = 'Your love level will show here.';
+    if (love > 0 && love < 20) { w = 'Just getting to know us'; h = 'Let go when it feels right.'; }
+    else if (love >= 20 && love < 40) { w = "It's a crush"; h = 'Let go when it feels right.'; }
+    else if (love >= 40 && love < 60) { w = 'We really get along'; h = 'Let go when it feels right.'; }
+    else if (love >= 60 && love < 80) { w = 'Totally in love'; h = 'Let go when it feels right.'; }
+    else if (love >= 80 && love < 100) { w = 'Head over heels'; h = 'Almost full…'; }
+    else if (love >= 100) { w = 'Obsessed!'; h = "Maximum love. We're blushing."; }
+    word.textContent = w; hint.textContent = h;
+  }
+  function stop() {
+    if (timer) { clearInterval(timer); timer = null; }
+    heartBtn.classList.remove('holding');
+  }
+  function start() {
+    if (timer) return;
+    heartBtn.classList.add('holding');
+    timer = setInterval(function () {
+      if (love >= 100) { stop(); return; }
+      love += 1; render();
+    }, 30);
+  }
+  heartBtn.addEventListener('pointerdown', start);
+  ['pointerup', 'pointerleave', 'pointercancel'].forEach(function (ev) { heartBtn.addEventListener(ev, stop); });
+  heartBtn.addEventListener('contextmenu', function (e) { e.preventDefault(); });
+  heartBtn.addEventListener('keydown', function (e) {
+    if (e.key === ' ' || e.key === 'Enter' || e.key === 'ArrowUp') {
+      e.preventDefault(); love = Math.min(100, love + 10); render();
+    }
+  });
+  $('resetLove').addEventListener('click', function () { stop(); love = 0; render(); });
+
+  // Preset chips
+  var chips = Array.prototype.slice.call(document.querySelectorAll('.chip'));
+  chips.forEach(function (c) {
+    c.addEventListener('click', function () {
+      c.setAttribute('aria-pressed', c.getAttribute('aria-pressed') === 'true' ? 'false' : 'true');
+    });
+  });
+
+  // Phone: digits only
+  var phone = $('phone');
+  phone.addEventListener('input', function () { phone.value = phone.value.replace(/\D/g, '').slice(0, 10); });
+
+  var form = $('feedback'), product = $('product'), submitBtn = $('submitBtn');
+  var productErr = $('product-err'), phoneErr = $('phone-err'), sendErr = $('send-err');
+
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    stop();
+    sendErr.hidden = true;
+    var ok = true;
+    var productVal = product.value.trim();
+    productErr.hidden = !!productVal;
+    product.classList.toggle('invalid', !productVal);
+    if (!productVal) ok = false;
+    var phoneVal = phone.value.trim();
+    var phoneBad = phoneVal.length > 0 && !/^[6-9]\d{9}$/.test(phoneVal);
+    phoneErr.hidden = !phoneBad;
+    $('phoneRow').classList.toggle('invalid', phoneBad);
+    if (phoneBad) ok = false;
+    if (!ok) { (productVal ? phone : product).focus(); return; }
+
+    // Spam bot filled the hidden field: pretend success, send nothing
+    if (form.website.value) { showThanks(); return; }
+
+    var data = {
+      product: productVal,
+      love: love,
+      loved: chips.filter(function (c) { return c.getAttribute('aria-pressed') === 'true'; })
+                  .map(function (c) { return c.textContent.trim(); }).join(', '),
+      comments: $('comments').value.trim(),
+      phone: phoneVal
+    };
+
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Sending…';
+    fetch(ENDPOINT, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify(data)
+    }).then(function () {
+      showThanks();
+    }).catch(function () {
+      sendErr.hidden = false;
+    }).finally(function () {
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Send my feedback';
+    });
+  });
+
+  function showThanks() {
+    $('thanksLove').textContent = love;
+    form.hidden = true;
+    var t = $('thanks');
+    t.hidden = false;
+    t.focus();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  $('again').addEventListener('click', function () {
+    form.reset();
+    chips.forEach(function (c) { c.setAttribute('aria-pressed', 'false'); });
+    love = 0; render();
+    [productErr, phoneErr, sendErr].forEach(function (el) { el.hidden = true; });
+    product.classList.remove('invalid'); $('phoneRow').classList.remove('invalid');
+    $('thanks').hidden = true;
+    form.hidden = false;
+    product.focus();
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>
